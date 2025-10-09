@@ -31,3 +31,15 @@ model RefreshToken {
 
   @@map("refresh_tokens")
 }
+
+
+model Verification {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  hashedPassword String
+  otp            String
+  expiresAt      DateTime
+  createdAt      DateTime @default(now())
+
+  @@map("verifications")
+}
