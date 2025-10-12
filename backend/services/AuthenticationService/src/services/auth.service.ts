@@ -1,6 +1,6 @@
 import prisma from "../utils/databaseConnection";
 import bcrypt from "bcryptjs";
-import { signUpUserInput } from "../api/validators/user.validator";
+import { signUpUserInput, verifyOtpInput } from "../api/validators/user.validator";
 
 
 
@@ -40,4 +40,30 @@ export const requestSignUpOTPService = async (input: signUpUserInput) => {
   });   
 
   return { message: 'OTP has been sent to your email :) ' };
+}
+
+
+
+export const verifyOtpService = async(input: verifyOtpInput) =>{
+
+  const { email, otp } = input;
+
+  const verifyOtp= await prisma.verification.findUnique({ where: { email } });
+
+  if (!verifyOtp || verifyOtp.otp !== otp) {
+    throw new Error('Invalid OTP');
+  }
+
+  if (verifyOtp.expiresAt < new Date()) {
+    throw new Error('OTP has expired');
+  }
+
+  await prisma.verification.delete({ where: { email } });   // Delete the temporary verification record
+  
+
+  const user = await prisma.user.create({
+    data: { email, password: verifyOtp.hashedPassword },
+  });
+  
+  return { message: 'User has been created successfully' };
 }

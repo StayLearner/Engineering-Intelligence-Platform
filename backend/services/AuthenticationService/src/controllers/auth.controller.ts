@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { getHealthStatus, requestSignUpOTPService } from "../services/auth.service";
+import { getHealthStatus, requestSignUpOTPService, verifyOtpService } from "../services/auth.service";
+import { verifyOtpInput } from "../api/validators/user.validator";
 
 
 
@@ -18,3 +19,15 @@ export const requestSignUpOTPServiceController = async (req: Request, res: Respo
     }
 }
 
+
+export const verifyOtpServiceController = async (req: Request<{},{},verifyOtpInput>, res: Response) => {
+ try {
+    const user= await verifyOtpService(req.body);
+    return res.status(200).json({message:"User has been verified and created successfully", user});
+ } catch (error:any) {
+    if(error.message.includes("Invalid") || error.message.includes("expired"))
+      return res.status(400).json({ error: error.message });
+    else
+      return res.status(500).json({message:"Internal Server Error"});
+ }   
+}
