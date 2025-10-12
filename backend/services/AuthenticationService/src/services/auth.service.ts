@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../utils/databaseConnection";
 import bcrypt from "bcryptjs";
 import { signUpUserInput } from "../api/validators/user.validator";
 
@@ -13,8 +13,6 @@ export const getHealthStatus = () => {
 
 
 
-
-const prisma = new PrismaClient();
 
 const generatedOTP= () =>{
     return Math.floor(100000 + Math.random() * 900000).toString();
