@@ -16,7 +16,7 @@ export const validate =
                 if (error instanceof ZodError) {
                     return res.status(400).json({
                         error: error.issues,
-                        message: error.message,
+                        // message: error.message,
                         path: error.type,
                     });
                 }
