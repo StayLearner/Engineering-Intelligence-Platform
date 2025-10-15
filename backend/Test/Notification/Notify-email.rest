@@ -1,2 +1,13 @@
 ### Check the health of the notify-service
 GET http://localhost:3002/api/v1/notify HTTP/1.1
+
+
+
+### Test the Email Service Directly
+POST http://localhost:3002/api/v1/notify/email-otp HTTP/1.1
+content-type: application/json
+
+{
+  "email": "arindamkheto13@gmail.com",
+  "otp": "000000"
+}
