@@ -26,7 +26,9 @@ const transporter = nodemailer.createTransport({
 
 export const sendOtpEmailService = async (input:SendOtpEmailInput) => {
    const { email, otp } = input;
-   
+  
+
+
   const mailOptions = {
     from: `"Coding Platform" <${process.env.SENDER_EMAIL}>`,
     to: email,
@@ -81,7 +83,7 @@ export const sendOtpEmailService = async (input:SendOtpEmailInput) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    return { message: 'OTP email sent successfully' };
+    return { success: true ,message: 'OTP email sent successfully' };
   } catch (error) {
     throw new Error('Failed to send email. Please try again later.');
   }
