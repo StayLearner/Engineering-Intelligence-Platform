@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package notification;
+
+service NotificationService {
+  rpc SendOTP (OtpRequest) returns (OtpResponse);
+}
+
+message OtpRequest {
+  string email = 1;
+  string otp = 2;
+}
+
+message OtpResponse {
+  bool success = 1;
+  string message = 2;
+}

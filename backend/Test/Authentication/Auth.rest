@@ -9,7 +9,7 @@ POST http://localhost:3001/api/v1/auth/signup HTTP/1.1
 content-type: application/json
 
 {
-  "email": "test011@example.com",
+  "email": "ghoshfamily111@gmail.com",
   "password": "Password@123"
 }
 

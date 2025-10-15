@@ -1,6 +1,7 @@
 import prisma from "../utils/databaseConnection";
 import bcrypt from "bcryptjs";
 import { signUpUserInput, verifyOtpInput } from "../api/validators/user.validator";
+import { sendOtpViaRpc } from "../clients/notification.client";
 
 
 
@@ -39,6 +40,7 @@ export const requestSignUpOTPService = async (input: signUpUserInput) => {
     update: { hashedPassword, otp, expiresAt },
   });   
 
+   sendOtpViaRpc(email, otp); 
   return { message: 'OTP has been sent to your email :) ' };
 }
 
