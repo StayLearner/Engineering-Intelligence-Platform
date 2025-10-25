@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getHealthStatus, logInUserService, refreshAccessTokenService, requestSignUpOTPService, verifyOtpService } from "../services/auth.service";
+import { getHealthStatus, logInUserService, logOutUserService, refreshAccessTokenService, requestSignUpOTPService, verifyOtpService } from "../services/auth.service";
 import { loginInput, verifyOtpInput } from "../api/validators/user.validator";
 
 
@@ -65,4 +65,31 @@ export const refreshAccessTokenController = async (req: Request, res: Response) 
   } catch (error: any) {
     return res.status(403).json({ message: error.message || 'Invalid refresh token.' }); 
   }
+};
+
+
+export const logOutUserServiceController = async (req: Request, res: Response) => {
+  const refreshToken = req.cookies?.refreshToken; 
+
+  res.clearCookie(
+      'refreshToken',
+      {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+      }
+    );
+
+  if (!refreshToken) {
+    return res.status(401).json({ message: 'Already logged out.' });
+  }
+
+  try {
+    const result = await logOutUserService(refreshToken);
+    return res.status(200).json({message:'Logged out successfully', result});
+  } catch (error: any) {
+    console.error("Logout service error:", error.message);
+    return res.status(200).json({ message: 'Logout successful' });
+
+  } 
 };

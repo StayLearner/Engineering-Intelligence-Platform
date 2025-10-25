@@ -154,3 +154,56 @@ export const refreshAccessTokenService = async (refreshToken: string) => {
 
   return { accessToken: newAccessToken };
 }
+
+
+
+export const logOutUserService = async (refreshToken: string) => {
+  try {
+    const decodedRefreshToken = verifyRefreshToken(refreshToken);
+
+    if (!decodedRefreshToken) {
+      // Even if expired, we might want to proceed to delete matching hashes
+      console.warn("Attempting logout with an invalid/expired refresh token.");
+    }
+
+
+    const userId = decodedRefreshToken?.userId; // Get userId if token was valid
+    if (!userId) {
+      const incomingHashedToken = await bcrypt.hash(refreshToken, 10); // Hash the bad token
+      const deleted = await prisma.refreshToken.deleteMany({
+        where: { hashedToken: incomingHashedToken }
+      });
+      return { message: 'Logout successful (invalid token cleanup attempted).' };
+    }
+
+
+
+    // Find all potential token records for the user
+    const potentialTokens = await prisma.refreshToken.findMany({
+      where: { userId: userId, revoked: false },
+    });
+
+    let deletedCount = 0;
+    for (const tokenRecord of potentialTokens) {
+      const isMatch = await bcrypt.compare(refreshToken, tokenRecord.hashedToken);
+      if (isMatch) {
+        await prisma.refreshToken.delete({
+          where: { id: tokenRecord.id }
+        });
+        deletedCount++;
+        break;
+      }
+    }
+
+
+    if (deletedCount === 0) {
+      console.error('No matching active refresh token found in DB during logout.');
+    }
+
+    return { message: 'Logout successful.' };
+  }
+  catch (error: any) {
+    console.error('Error during logout:', error);
+    return { message: 'Logout processed (potential error during token deletion).' };
+  }
+};
