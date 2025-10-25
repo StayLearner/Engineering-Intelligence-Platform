@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getHealthStatus, logInUserService, requestSignUpOTPService, verifyOtpService } from "../services/auth.service";
+import { getHealthStatus, logInUserService, refreshAccessTokenService, requestSignUpOTPService, verifyOtpService } from "../services/auth.service";
 import { loginInput, verifyOtpInput } from "../api/validators/user.validator";
 
 
@@ -36,9 +36,33 @@ export const verifyOtpServiceController = async (req: Request<{},{},verifyOtpInp
 export const logInUserServiceController = async (req: Request<{}, {}, loginInput>, res: Response)=> {
     try {
         const token = await logInUserService(req.body);
-        return res.status(200).json({message:"User has been logged in successfully", token});
+        
+        res.cookie('refreshToken', token.refreshToken, { 
+            httpOnly: true, 
+            sameSite: 'strict',    // Helps prevent CSRF attacks 
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 1000 * 60 * 60 * 24 * 7 });
+
+        return res.status(200).json({message:"User has been logged in successfully", accessToken:token.accessToken}); //in body only accessToken is sent
     } catch (error:any) {
       console.error("Internal Server Error", error.message);
       return res.status(401).json({message:"Invalid Credentials", error:error.message});   
     }
 }
+
+
+export const refreshAccessTokenController = async (req: Request, res: Response) => {
+  const refreshToken = req.cookies?.refreshToken; 
+  if (!refreshToken) {
+    return res.status(401).json({ message: 'Refresh token not provided.' });
+  }
+
+  try {
+    const result = await refreshAccessTokenService(refreshToken);
+
+    return res.status(200).json({message:'Refreshed Access Token', result});
+
+  } catch (error: any) {
+    return res.status(403).json({ message: error.message || 'Invalid refresh token.' }); 
+  }
+};

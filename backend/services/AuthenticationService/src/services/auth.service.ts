@@ -1,8 +1,8 @@
 import prisma from "../utils/databaseConnection";
 import bcrypt from "bcryptjs";
-import { signUpUserInput, verifyOtpInput, loginValidator, loginInput } from "../api/validators/user.validator";
+import { signUpUserInput, verifyOtpInput, loginInput } from "../api/validators/user.validator";
 import { sendOtpViaRpc } from "../clients/notification.client";
-import { createAccessToken, createRefreshToken} from '../utils/jwt';
+import { createAccessToken, createRefreshToken,  verifyRefreshToken} from '../utils/jwt';
 
 
 export const getHealthStatus = () => {
@@ -14,10 +14,11 @@ export const getHealthStatus = () => {
 
 
 
-
 const generatedOTP= () =>{
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
+
+
 
 export const requestSignUpOTPService = async (input: signUpUserInput) => {
  
@@ -108,4 +109,48 @@ export const logInUserService = async(input: loginInput) =>{
 }
 
     return { accessToken, refreshToken };
+}
+
+
+
+export const refreshAccessTokenService = async (refreshToken: string) => {
+
+  const decodedRefreshToken = verifyRefreshToken(refreshToken);
+
+  if (!decodedRefreshToken) {
+    throw new Error('Invalid refresh token');
+  }
+
+  const potentialTokens = await prisma.refreshToken.findMany({
+    where: {
+      userId: decodedRefreshToken.userId,
+      revoked: false
+    },
+  });
+
+  if (potentialTokens.length === 0) {
+    throw new Error('No refresh tokens found for this user');
+  }
+
+     //compare the hashed refresh token with the one in the database
+
+     let validTokenRecord = null;
+
+     for (const token of potentialTokens) {
+       const isValid = await bcrypt.compare(refreshToken, token.hashedToken);
+       if (isValid) {
+         validTokenRecord = token;
+         break;
+       }
+     }
+
+     if (!validTokenRecord) {
+       throw new Error('Invalid refresh token');
+     }
+
+
+    //  Issue a new Access Token
+  const newAccessToken = createAccessToken({ userId: decodedRefreshToken.userId });
+
+  return { accessToken: newAccessToken };
 }

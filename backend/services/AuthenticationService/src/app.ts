@@ -2,12 +2,14 @@ import express from 'express';
 import authRoutes from './api/routes/auth.route';
 import cors from 'cors';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 
 
 
 // Create The App 
 const app = express();
 
+app.use(cookieParser());  //Parse Cookies
 
 app.use(express.json());    //Apply Middleware
 
