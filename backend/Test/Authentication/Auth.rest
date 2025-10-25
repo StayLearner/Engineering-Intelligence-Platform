@@ -16,11 +16,23 @@ content-type: application/json
 
 
 
-### 2. Verify OTP and Create User
+### Verify OTP and Create User
 POST http://localhost:3001/api/v1/auth/verify-otp HTTP/1.1
 content-type: application/json
 
 {
-  "email": "test011@example.com",
-  "otp": "487266"
+  "email": "ghoshfamily111@gmail.com",
+  "otp": "678129"
+}
+
+
+
+
+### 
+POST http://localhost:3001/api/v1/auth/login HTTP/1.1
+content-type: application/json
+
+{
+  "email": "ghoshfamily111@gmail.com",
+  "password": "Password@123"
 }

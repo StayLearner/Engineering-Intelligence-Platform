@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { getHealthStatus, requestSignUpOTPService, verifyOtpService } from "../services/auth.service";
-import { verifyOtpInput } from "../api/validators/user.validator";
+import { getHealthStatus, logInUserService, requestSignUpOTPService, verifyOtpService } from "../services/auth.service";
+import { loginInput, verifyOtpInput } from "../api/validators/user.validator";
 
 
 
@@ -30,4 +30,15 @@ export const verifyOtpServiceController = async (req: Request<{},{},verifyOtpInp
     else
       return res.status(500).json({message:"Internal Server Error"});
  }   
+}
+
+
+export const logInUserServiceController = async (req: Request<{}, {}, loginInput>, res: Response)=> {
+    try {
+        const token = await logInUserService(req.body);
+        return res.status(200).json({message:"User has been logged in successfully", token});
+    } catch (error:any) {
+      console.error("Internal Server Error", error.message);
+      return res.status(401).json({message:"Invalid Credentials", error:error.message});   
+    }
 }
