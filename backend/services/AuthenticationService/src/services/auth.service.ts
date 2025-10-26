@@ -1,7 +1,8 @@
 import prisma from "../utils/databaseConnection";
 import bcrypt from "bcryptjs";
-import { signUpUserInput, verifyOtpInput } from "../api/validators/user.validator";
-
+import { signUpUserInput, verifyOtpInput, loginInput } from "../api/validators/user.validator";
+import { sendOtpViaRpc } from "../clients/notification.client";
+import { createAccessToken, createRefreshToken,  verifyRefreshToken} from '../utils/jwt';
 
 
 export const getHealthStatus = () => {
@@ -13,10 +14,11 @@ export const getHealthStatus = () => {
 
 
 
-
 const generatedOTP= () =>{
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
+
+
 
 export const requestSignUpOTPService = async (input: signUpUserInput) => {
  
@@ -39,6 +41,7 @@ export const requestSignUpOTPService = async (input: signUpUserInput) => {
     update: { hashedPassword, otp, expiresAt },
   });   
 
+   sendOtpViaRpc(email, otp); 
   return { message: 'OTP has been sent to your email :) ' };
 }
 
@@ -67,3 +70,140 @@ export const verifyOtpService = async(input: verifyOtpInput) =>{
   
   return { message: 'User has been created successfully' };
 }
+
+
+
+export const logInUserService = async(input: loginInput) =>{
+  const {email, password} = input;
+
+  const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+  
+  if(!user){
+    throw new Error('User does not exist');
+  }
+  
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if(!isPasswordValid){
+    throw new Error('Wrong Password Entered');
+  }
+
+
+    const accessToken = createAccessToken({ userId: user.id });
+    const refreshToken = createRefreshToken({ userId: user.id });
+
+
+    try {
+      const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+
+  // Always create a new record for this login session
+  await prisma.refreshToken.create({
+    data: {
+      hashedToken: hashedRefreshToken, 
+      userId: user.id,
+    },
+  });
+
+} catch (error) {
+  console.error('Error saving refresh token:', error);
+  throw new Error('Could not save session. Please try again.');
+}
+
+    return { accessToken, refreshToken };
+}
+
+
+
+export const refreshAccessTokenService = async (refreshToken: string) => {
+
+  const decodedRefreshToken = verifyRefreshToken(refreshToken);
+
+  if (!decodedRefreshToken) {
+    throw new Error('Invalid refresh token');
+  }
+
+  const potentialTokens = await prisma.refreshToken.findMany({
+    where: {
+      userId: decodedRefreshToken.userId,
+      revoked: false
+    },
+  });
+
+  if (potentialTokens.length === 0) {
+    throw new Error('No refresh tokens found for this user');
+  }
+
+     //compare the hashed refresh token with the one in the database
+
+     let validTokenRecord = null;
+
+     for (const token of potentialTokens) {
+       const isValid = await bcrypt.compare(refreshToken, token.hashedToken);
+       if (isValid) {
+         validTokenRecord = token;
+         break;
+       }
+     }
+
+     if (!validTokenRecord) {
+       throw new Error('Invalid refresh token');
+     }
+
+
+    //  Issue a new Access Token
+  const newAccessToken = createAccessToken({ userId: decodedRefreshToken.userId });
+
+  return { accessToken: newAccessToken };
+}
+
+
+
+export const logOutUserService = async (refreshToken: string) => {
+  try {
+    const decodedRefreshToken = verifyRefreshToken(refreshToken);
+
+    if (!decodedRefreshToken) {
+      // Even if expired, we might want to proceed to delete matching hashes
+      console.warn("Attempting logout with an invalid/expired refresh token.");
+    }
+
+
+    const userId = decodedRefreshToken?.userId; // Get userId if token was valid
+    if (!userId) {
+      const incomingHashedToken = await bcrypt.hash(refreshToken, 10); // Hash the bad token
+      const deleted = await prisma.refreshToken.deleteMany({
+        where: { hashedToken: incomingHashedToken }
+      });
+      return { message: 'Logout successful (invalid token cleanup attempted).' };
+    }
+
+
+
+    // Find all potential token records for the user
+    const potentialTokens = await prisma.refreshToken.findMany({
+      where: { userId: userId, revoked: false },
+    });
+
+    let deletedCount = 0;
+    for (const tokenRecord of potentialTokens) {
+      const isMatch = await bcrypt.compare(refreshToken, tokenRecord.hashedToken);
+      if (isMatch) {
+        await prisma.refreshToken.delete({
+          where: { id: tokenRecord.id }
+        });
+        deletedCount++;
+        break;
+      }
+    }
+
+
+    if (deletedCount === 0) {
+      console.error('No matching active refresh token found in DB during logout.');
+    }
+
+    return { message: 'Logout successful.' };
+  }
+  catch (error: any) {
+    console.error('Error during logout:', error);
+    return { message: 'Logout processed (potential error during token deletion).' };
+  }
+};
