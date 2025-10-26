@@ -16,6 +16,7 @@ export const verifyAccessToken = (token:string) => {
     try {
         return jwt.verify(token, signAccessToken) as JwtPayload & { userId: string }; 
     } catch (error) {
+        console.error("Token Verification Error:", error);
         return null;
     }
 }
@@ -24,6 +25,7 @@ export const verifyRefreshToken = (token:string) => {
     try {
         return jwt.verify(token, signRefreshToken) as JwtPayload & { userId: string }; 
     } catch (error) {
+        console.error("Token Verification Error:", error);
         return null;
     }
 }
