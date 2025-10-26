@@ -3,6 +3,7 @@ import { validate } from '../../middlewares/validate';
 import { getHealthController, logInUserServiceController, logOutUserServiceController, refreshAccessTokenController, requestSignUpOTPServiceController, verifyOtpServiceController } from '../../controllers/auth.controller';
 import { loginValidator, signUpUserValidator, verifyOtpSchema } from '../validators/user.validator';
 import { requireAuth } from '../../middlewares/requireAuth';
+import { githubOAuthCallbackController, githubOAuthController } from '../../controllers/oAuth.controller';
 
 
 
@@ -15,7 +16,8 @@ router.post('/verify-otp', validate(verifyOtpSchema), verifyOtpServiceController
 router.post('/login', validate(loginValidator), logInUserServiceController)
 router.post('/refresh-token',refreshAccessTokenController);
 router.post('/logout', logOutUserServiceController);
-
+router.get('/github', githubOAuthController);
+router.get('/github/callback', githubOAuthCallbackController);
 
 
 
