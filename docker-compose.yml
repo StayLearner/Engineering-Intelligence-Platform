@@ -1,17 +1,28 @@
-version : '3.8'
-services:
-  db:
-    image: postgres:15
-    container_name: coding_platform_db
-    restart: always
-    volumes:
-    - postgres_data:/var/lib/postgresql/data
-    ports:
-    - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+ services:
+   # Service 1: Authentication
+   auth-service:
+     build:
+       context: .
+       dockerfile: backend/services/AuthenticationService/dockerfile
+     env_file:
+        - backend/services/AuthenticationService/.env
+     ports:
+       - "3001:3001"
+     depends_on:
+       - db
 
-volumes:
-  postgres_data:
+    # Service 2: Database
+   db:
+    image: postgres:15
+    container_name: platform_db
+    environment:
+      POSTGRES_USER: adminUser
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: auth_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  
+ volumes:
+    postgres_data:
