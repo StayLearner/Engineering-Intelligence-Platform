@@ -1,18 +1,20 @@
- services:
-   # Service 1: Authentication
-   auth-service:
-     build:
-       context: .
-       dockerfile: backend/services/AuthenticationService/dockerfile
-     env_file:
-        - backend/services/AuthenticationService/.env
-     ports:
-       - "3001:3001"
-     depends_on:
-       - db
+services:
+  auth-service:
+    build:
+      context: .
+      dockerfile: backend/services/AuthenticationService/dockerfile
+      args:
+        DOCKER_DATABASE_URL: postgresql://adminUser:password@db:5432/auth_db
+    env_file:
+      - .env
+    environment:
+      DOCKER_DATABASE_URL: postgresql://adminUser:password@db:5432/auth_db
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
 
-    # Service 2: Database
-   db:
+  db:
     image: postgres:15
     container_name: platform_db
     environment:
@@ -23,6 +25,6 @@
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-  
- volumes:
-    postgres_data:
+
+volumes:
+  postgres_data:
