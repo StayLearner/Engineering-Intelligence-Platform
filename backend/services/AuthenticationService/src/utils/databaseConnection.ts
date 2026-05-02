@@ -1,7 +1,3 @@
-import { PrismaClient } from '../generated/prisma';
-
-// This creates one single instance of the Prisma Client
-const prisma = new PrismaClient();
-
+import { prisma } from "@db/prismaClient";
 
 export default prisma;
