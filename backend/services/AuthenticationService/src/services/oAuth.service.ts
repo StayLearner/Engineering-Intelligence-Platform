@@ -1,5 +1,5 @@
 import { GitHubEmailData, GitHubUserData } from "../types/githubUser";
-import prisma from "../utils/databaseConnection";
+import { prisma } from "@db/prismaClient";
 import bcrypt from "bcryptjs";
 import crypto from 'crypto';
 import { createAccessToken, createRefreshToken } from "../utils/jwt";
