@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyAccessToken } from '../utils/jwt';
-
-
+import {
+    generateAccessToken,
+    verifyAccessToken
+} from "@engineering/shared";
 
 
 declare global{

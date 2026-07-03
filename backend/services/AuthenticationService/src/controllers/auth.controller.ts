@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { getHealthStatus, logInUserService, logOutUserService, refreshAccessTokenService, requestSignUpOTPService, verifyOtpService } from "../services/auth.service";
-import { loginInput, verifyOtpInput } from "../api/validators/user.validator";
+import { loginInput, signUpUserInput, verifyOtpInput } from "../api/validators/user.validator";
 
 
 
@@ -10,7 +10,7 @@ export const getHealthController = (req: Request, res: Response) => {
 };
 
 
-export const requestSignUpOTPServiceController = async (req: Request, res: Response) => {
+export const requestSignUpOTPServiceController = async (req: Request<{},{},signUpUserInput>, res: Response) => {
     try {
         const result = await requestSignUpOTPService(req.body);
         res.status(200).json(result);

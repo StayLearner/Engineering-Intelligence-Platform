@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { validate } from '../../middlewares/validate';
+import { validate } from "@engineering/shared";
 import { getHealthController, logInUserServiceController, logOutUserServiceController, refreshAccessTokenController, requestSignUpOTPServiceController, verifyOtpServiceController } from '../../controllers/auth.controller';
 import { loginValidator, signUpUserValidator, verifyOtpSchema } from '../validators/user.validator';
 import { requireAuth } from '../../middlewares/requireAuth';

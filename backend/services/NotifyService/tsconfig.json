@@ -1,13 +1,23 @@
 {
   "compilerOptions": {
     "target": "es2020",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "rootDir": "./src",
+    "module": "commonjs",
+    "rootDir": "../../../",
+
+    "paths": {
+      "@db/*": ["../../../database/*"]
+    },
+
     "outDir": "./dist",
     "esModuleInterop": true,
+    "noEmit": false,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true
-  }
+  },
+ "include": [
+  "src/**/*",
+  "../../../database/**/*",
+  "../../packages/shared/types/**/*.d.ts"
+]
 }

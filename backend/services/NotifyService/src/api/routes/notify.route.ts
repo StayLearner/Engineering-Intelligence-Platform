@@ -1,6 +1,6 @@
 import express  from "express";
 import { getHealthController, sendOtpEmailController } from "../../controllers/email.controller";
-import { validate } from "../../middlewares/validate";
+import { validate } from "@engineering/shared";
 import { sendOtpEmailSchema } from "../validators/email.validator";
 
 

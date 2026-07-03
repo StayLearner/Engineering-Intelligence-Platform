@@ -1,9 +1,15 @@
 FROM node:22-slim
 
+WORKDIR /backend
+
+COPY backend/packages ./packages
+COPY backend/services/AuthenticationService ./services/AuthenticationService
+
 WORKDIR /backend/services/AuthenticationService
 
-COPY backend/services/AuthenticationService/package*.json ./
-
 RUN npm install
+
+EXPOSE 3001
+
 
 CMD ["npm", "run", "dev"]
