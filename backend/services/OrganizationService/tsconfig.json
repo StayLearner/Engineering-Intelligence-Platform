@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "commonjs",
+
+    "rootDir": "../../../",
+
+    "outDir": "./dist",
+
+    "esModuleInterop": true,
+    "noEmit": false,
+
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+
+    "paths": {
+      "@db/*": ["../../../database/*"]
+    }
+  },
+
+  "include": [
+    "src",
+    "../../../database"
+  ]
+}
