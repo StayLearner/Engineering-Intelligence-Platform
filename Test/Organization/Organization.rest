@@ -1,2 +1,94 @@
-### Check the health of the Organization-service
+# Check the health of the organization-service
 GET http://localhost:3003/api/v1/org/health HTTP/1.1
+
+
+
+
+### Create Organization - SUCCESS
+# Replace <YOUR_ACCESS_TOKEN> with a valid access token obtained from the Authentication Service
+POST http://localhost:3003/api/v1/org/create-org HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer <YOUR_ACCESS_TOKEN>
+
+{
+  "name": "Engineering Intelligence Platform",
+  "description": "Backend-first AI Governance Platform"
+}
+
+
+
+
+### Create Organization - Without Description
+POST http://localhost:3003/api/v1/org/create-org HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer <YOUR_ACCESS_TOKEN>
+
+{
+  "name": "OpenAI"
+}
+
+
+
+
+### Create Organization - Duplicate Name
+# Expected: 409 Conflict (currently may return a generic error until custom errors are implemented)
+POST http://localhost:3003/api/v1/org/create-org HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer <YOUR_ACCESS_TOKEN>
+
+{
+  "name": "Engineering Intelligence Platform",
+  "description": "Duplicate organization"
+}
+
+
+
+
+### Create Organization - Missing Authorization Header
+# Expected: 401 Unauthorized
+POST http://localhost:3003/api/v1/org/create-org HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Unauthorized Org"
+}
+
+
+
+
+### Create Organization - Invalid Access Token
+# Expected: 401 Unauthorized
+POST http://localhost:3003/api/v1/org/create-org HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer invalid.jwt.token
+
+{
+  "name": "Invalid Token Org"
+}
+
+
+
+
+### Create Organization - Validation Error (Missing Name)
+# Expected: 400 Bad Request
+POST http://localhost:3003/api/v1/org/create-org HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer <YOUR_ACCESS_TOKEN>
+
+{
+  "description": "Name field is required"
+}
+
+
+
+
+### Create Organization - Validation Error (Empty Name)
+# Expected: 400 Bad Request
+POST http://localhost:3003/api/v1/org/create-org HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer <YOUR_ACCESS_TOKEN>
+
+{
+  "name": "",
+  "description": "Invalid organization"
+}

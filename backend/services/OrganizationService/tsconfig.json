@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "es2020",
     "module": "commonjs",
-
     "rootDir": "../../../",
 
     "outDir": "./dist",
@@ -15,12 +14,14 @@
     "skipLibCheck": true,
 
     "paths": {
-      "@db/*": ["../../../database/*"]
-    }
+  "@db/*": ["../../../database/*"],
+  "@shared/*": ["../../../packages/shared/*"]
+}
   },
 
-  "include": [
-    "src",
-    "../../../database"
-  ]
+"include": [
+  "src/**/*",
+  "../../../database/**/*",
+  "../../packages/shared/types/**/*.d.ts"
+]
 }
