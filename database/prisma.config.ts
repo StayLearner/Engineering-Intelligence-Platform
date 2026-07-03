@@ -11,6 +11,5 @@ dotenv.config({
 export default defineConfig({
   schema: './prisma/schema.prisma',
   datasource: {
-    url: env('DOCKER_DATABASE_URL'),
-  },
+url: process.env.DOCKER_DATABASE_URL!,  },
 });

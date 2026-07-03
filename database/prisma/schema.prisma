@@ -1,22 +1,75 @@
 generator client {
-  provider      = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
+enum OrganizationRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+model Organization {
+  id          String  @id @default(cuid())
+  name        String
+  slug        String  @unique
+  description String?
+  logoUrl     String?
+
+  createdById String
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  members OrganizationMember[]
+
+  @@map("organizations")
+}
+
+model OrganizationMember {
+  id String @id @default(cuid())
+
+  organizationId String
+  userId         String
+
+  role OrganizationRole
+
+  joinedAt DateTime @default(now())
+
+  invitedById String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+  @@index([organizationId])
+  @@index([userId])
+  @@map("organization_members")
+}
+
 model User {
-  id            String         @id @default(cuid())
-  email         String         @unique
-  password      String
-  gitName       String?
-  gitAvatarUrl  String?
-  gitId         String?        @unique
-  gitUserName   String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id       String @id @default(cuid())
+  email    String @unique
+  password String
+
+  gitName      String?
+  gitAvatarUrl String?
+  gitId        String? @unique
+  gitUserName  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   refreshTokens RefreshToken[]
+
+  organizationMembers OrganizationMember[]
 
   @@map("Users")
 }
@@ -26,7 +79,8 @@ model RefreshToken {
   hashedToken String  @unique
   userId      String
   revoked     Boolean @default(false)
-  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade) // Realtionship between RefreshToken and User
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("refresh_tokens")
 }
