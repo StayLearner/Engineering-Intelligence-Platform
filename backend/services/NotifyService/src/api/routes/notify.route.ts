@@ -8,7 +8,7 @@ import { sendOtpEmailSchema } from "../validators/email.validator";
 
 const router = express.Router();
 
-router.get('/', getHealthController);
+router.get('/health', getHealthController);
 router.post('/email-otp', validate(sendOtpEmailSchema),sendOtpEmailController);
 
 export default router;

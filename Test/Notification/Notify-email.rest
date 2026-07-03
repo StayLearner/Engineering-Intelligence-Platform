@@ -1,5 +1,5 @@
 ### Check the health of the notify-service
-GET http://localhost:3002/api/v1/notify HTTP/1.1
+GET http://localhost:3002/api/v1/notify/health HTTP/1.1
 
 
 

@@ -6,7 +6,7 @@ import { SendOtpEmailInput } from '../api/validators/email.validator';
 export const getHealthStatus = () => {
     return {
         status: "Up",
-        message: "Email Service is Healthy and Running"
+        message: "Notify Service is Healthy and Running"
     };
 };
 

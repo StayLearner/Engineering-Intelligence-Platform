@@ -10,7 +10,7 @@ import { githubOAuthCallbackController, githubOAuthController } from '../../cont
 const router = express.Router();
 
 
-router.get('/', getHealthController);
+router.get('/health', getHealthController);
 router.post('/signup', validate(signUpUserValidator), requestSignUpOTPServiceController)
 router.post('/verify-otp', validate(verifyOtpSchema), verifyOtpServiceController)
 router.post('/login', validate(loginValidator), logInUserServiceController)
