@@ -3,7 +3,10 @@ import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
 
 // Path to the shared blueprint file
-const PROTO_PATH = path.join(__dirname, '../../../../proto/notify.proto');
+const PROTO_PATH = path.join(
+  process.cwd(),
+  '../../proto/notify.proto'
+);
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
@@ -16,7 +19,7 @@ const notificationProto = grpc.loadPackageDefinition(packageDefinition).notifica
 
 // Create the client (the remote control)
 const notificationClient = new notificationProto.NotificationService(
-  'localhost:50051',
+  'notify-service:50051',
   grpc.credentials.createInsecure()
 );
 
