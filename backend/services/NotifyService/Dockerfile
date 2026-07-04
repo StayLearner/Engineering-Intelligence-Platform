@@ -3,9 +3,9 @@ FROM node:22-slim
 WORKDIR /backend
 
 COPY backend/packages ./packages
-COPY backend/services/OrganizationService ./services/OrganizationService
+COPY backend/services/NotifyService ./services/NotifyService
 
-WORKDIR /backend/services/OrganizationService
+WORKDIR /backend/services/NotifyService
 
 RUN npm install
 
