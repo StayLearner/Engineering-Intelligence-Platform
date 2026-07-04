@@ -2,7 +2,7 @@ import { GitHubEmailData, GitHubUserData } from "../types/githubUser";
 import { prisma } from "@db/prismaClient";
 import bcrypt from "bcryptjs";
 import crypto from 'crypto';
-import { createAccessToken, createRefreshToken } from "../utils/jwt";
+import { createAccessToken, createRefreshToken } from "../../../../packages/shared/jwt/jwt";
 
 export const githubOAuthCallbackService = async (code: string) => {
     try {
