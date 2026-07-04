@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import {
-    generateAccessToken,
     verifyAccessToken
 } from "@engineering/shared";
 
@@ -29,7 +28,7 @@ export const requireAuth = (
     }
 
     req.user = {
-        id: decodedToken.id,
+        id: decodedToken.userId,
     };
 
     next();
