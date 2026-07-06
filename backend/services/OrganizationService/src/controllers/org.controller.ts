@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createOrganization, getHealthStatus, getOrganizations } from "../services/org.service";
+import { createOrganization, getHealthStatus, getOrganizations, getSingleOrganization } from "../services/org.service";
 import { createOrganizationInput } from "../api/validators/org.validator";
 
 
@@ -38,6 +38,23 @@ export const getOrganizationsController = async (req: Request, res: Response) =>
         const organizations= await getOrganizations(userId);
 
         return res.status(200).json({message:"Fetched All Organizations", organizations});
+    } catch (error: any) {
+       res.status(500).json({ error: error.message });
+    }
+}
+
+
+export const getSingleOrganizationController = async (req: Request, res: Response) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        const userId = req.user.id;
+        const orgId = req.params.organizationId as string;
+        const organization = await getSingleOrganization(orgId, userId);
+
+        return res.status(200).json({message:"Fetched Single Organization", organization});
     } catch (error: any) {
        res.status(500).json({ error: error.message });
     }
