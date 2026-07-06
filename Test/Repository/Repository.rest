@@ -1,0 +1,3 @@
+# Check the health of the organization-service
+GET http://localhost:3004/api/v1/repo/health HTTP/1.1
+
