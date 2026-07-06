@@ -10,7 +10,7 @@ const router = express.Router();
 
 
 router.get('/health', getHealthController);
-router.post("create-repo",requireAuth,validate(createRepositoryInput),createRepositoryController);
+router.post('/create-repo',requireAuth,validate(createRepositoryInput),createRepositoryController);
 
 
 

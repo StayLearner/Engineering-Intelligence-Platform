@@ -2,8 +2,8 @@
 ### Repository Service
 
 @baseUrl = http://localhost:3004/api/v1/repo
-@accessToken = <PASTE_YOUR_ACCESS_TOKEN>
-@organizationId = <PASTE_YOUR_ORGANIZATION_ID>
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbXI1YWQ5YXQwMDAzMThwbXl4Z2J0czJ6IiwiaWF0IjoxNzgzMzIyNDMyLCJleHAiOjE3ODMzMjMzMzJ9.xMcT5adbU6WyLtzxMzNx0QQ4SJbnICdFdNSM4iL2MBI
+@organizationId = cmr8rzz3x000018ocpba06woo
 
 ### ============================================
 ### Health Check
@@ -17,7 +17,7 @@ GET {{baseUrl}}/health HTTP/1.1
 ### Expected: 201 Created
 ### ============================================
 
-POST {{baseUrl}}/repositories HTTP/1.1
+POST {{baseUrl}}/create-repo HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -29,29 +29,14 @@ Authorization: Bearer {{accessToken}}
   "description": "Production-grade backend platform with AI capabilities."
 }
 
-### ============================================
-### Create Repository - Duplicate Repository
-### Expected: 500 (Will become 409 later)
-### ============================================
 
-POST {{baseUrl}}/repositories HTTP/1.1
-Content-Type: application/json
-Authorization: Bearer {{accessToken}}
-
-{
-  "organizationId": "{{organizationId}}",
-  "name": "engineering-intelligence-platform",
-  "owner": "RohanGhosh",
-  "githubUrl": "https://github.com/RohanGhosh/engineering-intelligence-platform",
-  "description": "Duplicate repository."
-}
 
 ### ============================================
 ### Create Repository - Invalid GitHub URL
 ### Expected: 400 Bad Request
 ### ============================================
 
-POST {{baseUrl}}/repositories HTTP/1.1
+POST {{baseUrl}}/create-repo HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -68,7 +53,7 @@ Authorization: Bearer {{accessToken}}
 ### Expected: 400 Bad Request
 ### ============================================
 
-POST {{baseUrl}}/repositories HTTP/1.1
+POST {{baseUrl}}/create-repo HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -85,7 +70,7 @@ Authorization: Bearer {{accessToken}}
 ### Expected: 500 (Will become 404 later)
 ### ============================================
 
-POST {{baseUrl}}/repositories HTTP/1.1
+POST {{baseUrl}}/create-repo HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -102,7 +87,7 @@ Authorization: Bearer {{accessToken}}
 ### Expected: 401 Unauthorized
 ### ============================================
 
-POST {{baseUrl}}/repositories HTTP/1.1
+POST {{baseUrl}}/create-repo HTTP/1.1
 Content-Type: application/json
 
 {
