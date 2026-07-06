@@ -2,8 +2,16 @@
 ### Repository Service
 
 @baseUrl = http://localhost:3004/api/v1/repo
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbXI1YWQ5YXQwMDAzMThwbXl4Z2J0czJ6IiwiaWF0IjoxNzgzMzIyNDMyLCJleHAiOjE3ODMzMjMzMzJ9.xMcT5adbU6WyLtzxMzNx0QQ4SJbnICdFdNSM4iL2MBI
 @organizationId = cmr8rzz3x000018ocpba06woo
+@repositoryId = cmr8w5q22000018msml41s8cx
+
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbXI1YWQ5YXQwMDAzMThwbXl4Z2J0czJ6IiwiaWF0IjoxNzgzMzMzNzkyLCJleHAiOjE3ODMzMzQ2OTJ9.HilgAz6tqBQ8HzUxKzTOcxQVCamYZowrpk_n9E8jNXg
+
+
+
+
+
+
 
 ### ============================================
 ### Health Check
@@ -23,9 +31,9 @@ Authorization: Bearer {{accessToken}}
 
 {
   "organizationId": "{{organizationId}}",
-  "name": "engineering-intelligence-platform",
+  "name": "StudyPartner AI",
   "owner": "RohanGhosh",
-  "githubUrl": "https://github.com/RohanGhosh/engineering-intelligence-platform",
+  "githubUrl": "https://github.com/RohanGhosh/StudyPartnerAI",
   "description": "Production-grade backend platform with AI capabilities."
 }
 
@@ -97,3 +105,23 @@ Content-Type: application/json
   "githubUrl": "https://github.com/RohanGhosh/engineering-intelligence-platform",
   "description": "Unauthorized request."
 }
+
+
+
+
+
+
+### Get All Repositories
+### ==========================================
+
+GET {{baseUrl}}/repository?organizationId={{organizationId}}
+Authorization: Bearer {{accessToken}}
+
+###
+
+### ==========================================
+### Get Repository By ID
+### ==========================================
+
+GET {{baseUrl}}/repository/{{repositoryId}}
+Authorization: Bearer {{accessToken}}
