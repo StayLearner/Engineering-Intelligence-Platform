@@ -2,7 +2,7 @@ import prisma from "../utils/databaseConnection";
 import bcrypt from "bcryptjs";
 import { signUpUserInput, verifyOtpInput, loginInput } from "../api/validators/user.validator";
 import { sendOtpViaRpc } from "../clients/notification.client";
-import { createAccessToken, createRefreshToken,  verifyRefreshToken} from '../utils/jwt';
+import { createAccessToken, createRefreshToken,  verifyRefreshToken} from "../../../../packages/shared/jwt/jwt";
 
 
 export const getHealthStatus = () => {

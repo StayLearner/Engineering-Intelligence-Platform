@@ -18,7 +18,9 @@
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "nodemailer": "^7.0.9",
-    "zod": "^4.1.12"
+    "zod": "^4.1.12",
+    "@engineering/shared": "file:../../packages/shared"
+
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

@@ -20,7 +20,10 @@ app.listen(port, () => {
 
 
 // --- gRPC Server Setup ---
-const PROTO_PATH = path.join(__dirname, '../../../proto/notify.proto');
+const PROTO_PATH = path.join(
+  process.cwd(),
+  '../../proto/notify.proto'
+);
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
@@ -56,17 +59,20 @@ const SendOTP = async(call: any, callback: any) => {
 
 
 // Start the gRPC server on a standard gRPC port
+grpcServer.addService(
+  (notificationProto as any).NotificationService.service,
+  { SendOTP }
+);
+
 grpcServer.bindAsync(
-  '0.0.0.0:50051', 
+  "0.0.0.0:50051",
   grpc.ServerCredentials.createInsecure(),
-  (err, port) =>{
+  (err, port) => {
     if (err) {
-      console.error('Failed to start gRPC server:', err);
+      console.error(err);
       return;
     }
-    // console.log(`gRPC server started on port ${port}`);
+
+    console.log(`gRPC running on ${port}`);
   }
-); 
-
-
-grpcServer.addService((notificationProto as any).NotificationService.service, { SendOTP: SendOTP });
+);
