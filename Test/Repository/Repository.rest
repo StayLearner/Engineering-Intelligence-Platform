@@ -1,0 +1,99 @@
+### ============================================
+### Repository Service
+
+@baseUrl = http://localhost:3004/api/v1/repo
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbXI1YWQ5YXQwMDAzMThwbXl4Z2J0czJ6IiwiaWF0IjoxNzgzMzIyNDMyLCJleHAiOjE3ODMzMjMzMzJ9.xMcT5adbU6WyLtzxMzNx0QQ4SJbnICdFdNSM4iL2MBI
+@organizationId = cmr8rzz3x000018ocpba06woo
+
+### ============================================
+### Health Check
+### Expected: 200 OK
+### ============================================
+
+GET {{baseUrl}}/health HTTP/1.1
+
+### ============================================
+### Create Repository - Success
+### Expected: 201 Created
+### ============================================
+
+POST {{baseUrl}}/create-repo HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "organizationId": "{{organizationId}}",
+  "name": "engineering-intelligence-platform",
+  "owner": "RohanGhosh",
+  "githubUrl": "https://github.com/RohanGhosh/engineering-intelligence-platform",
+  "description": "Production-grade backend platform with AI capabilities."
+}
+
+
+
+### ============================================
+### Create Repository - Invalid GitHub URL
+### Expected: 400 Bad Request
+### ============================================
+
+POST {{baseUrl}}/create-repo HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "organizationId": "{{organizationId}}",
+  "name": "engineering-intelligence-platform",
+  "owner": "RohanGhosh",
+  "githubUrl": "https://google.com",
+  "description": "Invalid GitHub URL."
+}
+
+### ============================================
+### Create Repository - Empty Repository Name
+### Expected: 400 Bad Request
+### ============================================
+
+POST {{baseUrl}}/create-repo HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "organizationId": "{{organizationId}}",
+  "name": "",
+  "owner": "RohanGhosh",
+  "githubUrl": "https://github.com/RohanGhosh/engineering-intelligence-platform",
+  "description": "Testing validation."
+}
+
+### ============================================
+### Create Repository - Invalid Organization ID
+### Expected: 500 (Will become 404 later)
+### ============================================
+
+POST {{baseUrl}}/create-repo HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "organizationId": "invalidOrganizationId",
+  "name": "engineering-intelligence-platform",
+  "owner": "RohanGhosh",
+  "githubUrl": "https://github.com/RohanGhosh/engineering-intelligence-platform",
+  "description": "Organization does not exist."
+}
+
+### ============================================
+### Create Repository - Missing Authorization
+### Expected: 401 Unauthorized
+### ============================================
+
+POST {{baseUrl}}/create-repo HTTP/1.1
+Content-Type: application/json
+
+{
+  "organizationId": "{{organizationId}}",
+  "name": "engineering-intelligence-platform",
+  "owner": "RohanGhosh",
+  "githubUrl": "https://github.com/RohanGhosh/engineering-intelligence-platform",
+  "description": "Unauthorized request."
+}

@@ -26,7 +26,8 @@ model Organization {
   deletedAt DateTime?
 
   members OrganizationMember[]
-
+  repositories Repository[]
+  
   @@map("organizations")
 }
 
@@ -94,4 +95,26 @@ model Verification {
   createdAt      DateTime @default(now())
 
   @@map("verifications")
+}
+
+model Repository {
+  id             String   @id @default(cuid())
+
+  name           String
+  owner          String
+  githubUrl      String   @unique
+  description    String?
+
+  defaultBranch  String   @default("main")
+
+  organizationId String
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@map("repositories")
 }

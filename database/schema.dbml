@@ -1,0 +1,120 @@
+
+// ==============================================
+// Engineering Intelligence Platform
+// Database Schema (Current)
+// ==============================================
+
+Enum OrganizationRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+Table Users {
+  id String [pk]
+  email String [unique]
+  password String
+
+  gitName String
+  gitAvatarUrl String
+  gitId String [unique]
+  gitUserName String
+
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table organizations {
+  id String [pk]
+
+  name String
+  slug String [unique]
+  description String
+  logoUrl String
+
+  createdById String
+
+  createdAt datetime
+  updatedAt datetime
+  deletedAt datetime
+}
+
+Table organization_members {
+  id String [pk]
+
+  organizationId String
+  userId String
+
+  role OrganizationRole
+
+  joinedAt datetime
+
+  invitedById String
+
+  createdAt datetime
+  updatedAt datetime
+
+  indexes {
+    (organizationId, userId) [unique]
+    organizationId
+    userId
+  }
+}
+
+Table repositories {
+  id String [pk]
+
+  name String
+  owner String
+
+  githubUrl String [unique]
+
+  description String
+
+  defaultBranch String
+
+  organizationId String
+
+  createdAt datetime
+  updatedAt datetime
+
+  indexes {
+    organizationId
+  }
+}
+
+Table refresh_tokens {
+  id String [pk]
+
+  hashedToken String [unique]
+
+  userId String
+
+  revoked boolean
+}
+
+Table verifications {
+  id String [pk]
+
+  email String [unique]
+
+  hashedPassword String
+
+  otp String
+
+  expiresAt datetime
+
+  createdAt datetime
+}
+
+// ==============================================
+// Relationships
+// ==============================================
+
+Ref: organization_members.organizationId > organizations.id [delete: cascade]
+
+Ref: organization_members.userId > Users.id [delete: cascade]
+
+Ref: repositories.organizationId > organizations.id [delete: cascade]
+
+Ref: refresh_tokens.userId > Users.id [delete: cascade]
