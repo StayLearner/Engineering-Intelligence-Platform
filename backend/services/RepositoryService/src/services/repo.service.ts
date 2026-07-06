@@ -114,3 +114,38 @@ export const getRepositories = async (organizationId: string, userId: string) =>
 
   return repositories;
 };
+
+
+
+export const getSingleRepository = async (repositoryId: string, userId: string) => {
+
+  //Check repo exists or not
+  const repository = await prisma.repository.findUnique({
+    where: {
+      id:repositoryId
+    },
+    include: {
+      organization: true,
+    },
+  });
+
+   if (!repository) {
+    throw new Error("Repository not found");
+  }
+
+  // Verify membership
+  const membership = await prisma.organizationMember.findUnique({
+    where: {
+      organizationId_userId: {
+        organizationId: repository.organizationId,
+        userId,
+      },
+    },
+  });
+
+  if (!membership) {
+    throw new Error("You are not authorized to access this repository");
+  }
+
+  return repository;
+};

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createRepository, getHealthStatus, getRepositories } from "../services/repo.service";
+import { createRepository, getHealthStatus, getRepositories, getSingleRepository } from "../services/repo.service";
 import { CreateRepositoryInput } from "../api/validators/repo.validator";
 
 
@@ -76,3 +76,18 @@ export const getRepositoriesController = async (
     }
 };
 
+export const getSingleRepositoryController = async (req: Request, res: Response) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        const userId = req.user.id;
+        const repoId = req.params.repositoryId as string;
+        const repository = await getSingleRepository(repoId, userId);
+
+        return res.status(200).json({message:"Fetched Single Repository", repository});
+    } catch (error: any) {
+       res.status(500).json({ error: error.message });
+    }
+}
