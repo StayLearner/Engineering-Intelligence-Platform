@@ -69,3 +69,25 @@ export const getOrganizations = async (userId: string) => {
 
     return memberships.map((membership) => membership.organization);
 };
+
+
+
+export const getSingleOrganization = async (organizationId: string, userId: string) => {
+  const membership = await prisma.organizationMember.findUnique({
+    where: {
+      organizationId_userId: {
+        organizationId,
+        userId,
+      },
+    },
+    include: {
+      organization: true,
+    },
+  });
+
+  if (!membership) {
+    throw new Error("Access denied");
+  }
+
+  return membership.organization;
+};
