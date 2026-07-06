@@ -8,7 +8,7 @@ GET http://localhost:3003/api/v1/org/health HTTP/1.1
 # Replace <YOUR_ACCESS_TOKEN> with a valid access token obtained from the Authentication Service
 POST http://localhost:3003/api/v1/org/create-org HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer <YOUR_ACCESS_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbXI1YWQ5YXQwMDAzMThwbXl4Z2J0czJ6IiwiaWF0IjoxNzgzMTQxNjg2LCJleHAiOjE3ODMxNDI1ODZ9.MjX-z0MYayxhmgDhfVw4NLYJNqsCfzvMryjRcC5crXM
 
 {
   "name": "Engineering Intelligence Platform",
@@ -21,7 +21,7 @@ Authorization: Bearer <YOUR_ACCESS_TOKEN>
 ### Create Organization - Without Description
 POST http://localhost:3003/api/v1/org/create-org HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer <YOUR_ACCESS_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbXI1YWQ5YXQwMDAzMThwbXl4Z2J0czJ6IiwiaWF0IjoxNzgzMTQyNzAwLCJleHAiOjE3ODMxNDM2MDB9.IBZMJvjZ2-Lor-aUGyYPNkUI2aUeWcAzbsCUNFEQGkY
 
 {
   "name": "OpenAI"
@@ -34,7 +34,7 @@ Authorization: Bearer <YOUR_ACCESS_TOKEN>
 # Expected: 409 Conflict (currently may return a generic error until custom errors are implemented)
 POST http://localhost:3003/api/v1/org/create-org HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer <YOUR_ACCESS_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbXI1YWQ5YXQwMDAzMThwbXl4Z2J0czJ6IiwiaWF0IjoxNzgzMTQyNzAwLCJleHAiOjE3ODMxNDM2MDB9.IBZMJvjZ2-Lor-aUGyYPNkUI2aUeWcAzbsCUNFEQGkY
 
 {
   "name": "Engineering Intelligence Platform",
@@ -73,7 +73,7 @@ Authorization: Bearer invalid.jwt.token
 # Expected: 400 Bad Request
 POST http://localhost:3003/api/v1/org/create-org HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer <YOUR_ACCESS_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbXI1YWQ5YXQwMDAzMThwbXl4Z2J0czJ6IiwiaWF0IjoxNzgzMTQyNzAwLCJleHAiOjE3ODMxNDM2MDB9.IBZMJvjZ2-Lor-aUGyYPNkUI2aUeWcAzbsCUNFEQGkY
 
 {
   "description": "Name field is required"
@@ -86,9 +86,16 @@ Authorization: Bearer <YOUR_ACCESS_TOKEN>
 # Expected: 400 Bad Request
 POST http://localhost:3003/api/v1/org/create-org HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer <YOUR_ACCESS_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbXI1YWQ5YXQwMDAzMThwbXl4Z2J0czJ6IiwiaWF0IjoxNzgzMTQyNzAwLCJleHAiOjE3ODMxNDM2MDB9.IBZMJvjZ2-Lor-aUGyYPNkUI2aUeWcAzbsCUNFEQGkY
 
 {
   "name": "",
   "description": "Invalid organization"
 }
+
+
+
+
+### Get All Organizations
+GET http://localhost:3003/api/v1/org/organizations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbXI1YWQ5YXQwMDAzMThwbXl4Z2J0czJ6IiwiaWF0IjoxNzgzMzEzMTkxLCJleHAiOjE3ODMzMTQwOTF9.dTsAaiiQ9QRYHNPhdEQELppOX8grWxeGbIIF2t2outE

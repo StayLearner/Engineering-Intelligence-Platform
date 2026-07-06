@@ -54,3 +54,18 @@ export const createOrganization = async(input: CreateOrganizationDTO) => {
     return: result
   };
 }
+
+
+
+export const getOrganizations = async (userId: string) => {
+    const memberships = await prisma.organizationMember.findMany({
+        where: {
+            userId,
+        },
+        include: {
+            organization: true,
+        },
+    });
+
+    return memberships.map((membership) => membership.organization);
+};
