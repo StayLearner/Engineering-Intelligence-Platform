@@ -71,3 +71,81 @@ export const createRepository = async(input: CreateRepositoryDTO, userId: string
     return: result
   };
 }
+
+
+
+
+
+export const getRepositories = async (organizationId: string, userId: string) => {
+
+  const organization = await prisma.organization.findUnique({
+    where: {
+      id: organizationId,
+    },
+  });
+
+  if (!organization) {
+    throw new Error("Organization not found");
+  }
+
+  // Check membership
+  const membership = await prisma.organizationMember.findUnique({
+    where: {
+      organizationId_userId: {
+        organizationId,
+        userId,
+      },
+    },
+  });
+
+  if (!membership) {
+    throw new Error("You are not a member of this organization");
+  }
+
+  // Fetch repositories
+  const repositories = await prisma.repository.findMany({
+    where: {
+      organizationId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return repositories;
+};
+
+
+
+export const getSingleRepository = async (repositoryId: string, userId: string) => {
+
+  //Check repo exists or not
+  const repository = await prisma.repository.findUnique({
+    where: {
+      id:repositoryId
+    },
+    include: {
+      organization: true,
+    },
+  });
+
+   if (!repository) {
+    throw new Error("Repository not found");
+  }
+
+  // Verify membership
+  const membership = await prisma.organizationMember.findUnique({
+    where: {
+      organizationId_userId: {
+        organizationId: repository.organizationId,
+        userId,
+      },
+    },
+  });
+
+  if (!membership) {
+    throw new Error("You are not authorized to access this repository");
+  }
+
+  return repository;
+};
