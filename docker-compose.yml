@@ -119,5 +119,39 @@ services:
 
     restart: unless-stopped
 
+  repository-service:
+    build:
+      context: .
+      dockerfile: backend/services/RepositoryService/Dockerfile
+
+    container_name: repository-service
+
+    working_dir: /backend/services/RepositoryService
+
+    command: >
+      sh -c "
+      npm install &&
+      npm run dev
+      "
+
+    volumes:
+      - ./backend:/backend
+      - ./database:/database
+
+    ports:
+      - "3004:3004"
+
+    env_file:
+      - .env
+
+    environment:
+      DATABASE_URL: postgresql://adminUser:password@postgres:5432/auth_db
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    restart: unless-stopped
+
 volumes:
   postgres_data:
